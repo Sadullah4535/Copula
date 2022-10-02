@@ -2,7 +2,7 @@
 
 # https://datasciencegenie.com/computing-the-portfolio-var-using-copulas/
 
-# Serilerin grafiðini çizme I. yöntem
+# Serilerin (BIST100 ve USD) grafiÃ°ini Ã§izme I. yÃ¶ntem
 plot.ts(BIST100)
 plot.ts(USD)
 tm<-cbind(BIST100,USD)
@@ -18,20 +18,20 @@ library(VineCopula)
 
 
 
-# Serilerin grafiðini çizme II. yöntem
+# Serilerin grafiÃ°ini Ã§izme II. yÃ¶ntem
 plot(BIST100)
 lines(BIST100, type = "o", col = "blue")
 plot(USD)
 lines(USD, type = "o", col = "blue")
 
-# Histogram grafiðini çiz
+# Histogram grafiÃ°ini Ã§iz
 hist(BIST100, breaks = 20, col = "green", density = 20)
 hist(USD, breaks = 20, col = "green", density = 20)
 
 
 
 par(mfrow=c(1,2))
-hist(BIST100,main="Daily Returns of BIST100 Histogram",xlab="BÝST100 Daily Returns",breaks = 60, col = "green", density = 10)
+hist(BIST100,main="Daily Returns of BIST100 Histogram",xlab="BÃST100 Daily Returns",breaks = 60, col = "green", density = 10)
 hist(USD,main="Daily Returns of USD Histogram",xlab="USD Daily Returns",breaks = 60, col = "green", density = 10)
 par(mfrow=c(1,1))
 
@@ -159,15 +159,15 @@ par(mfrow=c(1,1))
 
 
 
-library(VineCopula)# Kullanýlmak istenen paketin(VineCopula) yüklenmesi.
-FittedCopula<-BiCopSelect(BIST100trans,USDtrans,familyset=NA)#Ýki veri serisi arasýndaki en uygun copula fonksiyonunun belirlenmesi.
-summary(FittedCopula)#Copula fonksiyonunun özelliklerinin gösterilmesi.
+library(VineCopula)# KullanÃ½lmak istenen paketin(VineCopula) yÃ¼klenmesi.
+FittedCopula<-BiCopSelect(BIST100trans,USDtrans,familyset=NA)#Ãki veri serisi arasÃ½ndaki en uygun copula fonksiyonunun belirlenmesi.
+summary(FittedCopula)#Copula fonksiyonunun Ã¶zelliklerinin gÃ¶sterilmesi.
 
-# Gerçek günlük getirilerin CDF grafiðinin çizilmesi.
+# GerÃ§ek gÃ¼nlÃ¼k getirilerin CDF grafiÃ°inin Ã§izilmesi.
 plot(BIST100trans,USDtrans,xlab="CDF BIST100 Daily Returns",ylab="CDF USD Daily Returns",main="Actual and Sampled Returns CDFs")
 
-CopulaSim<-BiCopSim(length(BIST100), FittedCopula)#Copula fonksiyonunun özelliklerine göre yeni bir veri üretilmesi.
-points(CopulaSim, col = rgb(0,0,1,alpha=0.3), pch=16) #Yeni üretilen verinin CDF grafiðinin çizilmesi.
+CopulaSim<-BiCopSim(length(BIST100), FittedCopula)#Copula fonksiyonunun Ã¶zelliklerine gÃ¶re yeni bir veri Ã¼retilmesi.
+points(CopulaSim, col = rgb(0,0,1,alpha=0.3), pch=16) #Yeni Ã¼retilen verinin CDF grafiÃ°inin Ã§izilmesi.
 
 
 
@@ -175,8 +175,8 @@ points(CopulaSim, col = rgb(0,0,1,alpha=0.3), pch=16) #Yeni üretilen verinin CDF
 
 
 #Portfolio Weights
-w1<-0.5 
-w2<-0.5
+w1<-0.7 
+w2<-0.3
 
 library(copula)
 library(VC2copula)
@@ -209,19 +209,4 @@ VaR
 
 
 
-#t-Copula
-
-rho<-0.7
-df<-2
-
-t_Cop<- mvdc(tCopula(rho, dim = 2,df=df), margins=c("norm","norm"),paramMargins=list(list(mean=0, sd=1),list(mean=0, sd=1)))
-
-x1 <- x2 <- seq(-3, 3, length= 200)
-
-v<-c()
-for (i in x1)
-{for (j in x2){v<-c(v,dMvdc(c(i,j), t_Cop))}}
-f<-t(matrix(v,nrow=200,byrow=TRUE))
-
-plot_ly(x=x1,y=x2,z=f,type = "contour")%>%layout(xaxis=list(title="x1"),yaxis=list(title="x2"),title=paste("t-Copula with ??=",as.character(rho)," and ",as.character(df),"df"))
 
